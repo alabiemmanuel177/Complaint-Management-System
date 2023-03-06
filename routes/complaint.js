@@ -98,7 +98,52 @@ router.get("/:studentId/complaints", async (req, res) => {
   }
 });
 
-//route to accepct complaint
+//route to retrieve all complaints for a student with status "Pending"
+router.get("/complaints/student/:id/pending", async (req, res) => {
+  try {
+    const complaints = await Complaint.find({
+      student: req.params.id,
+      status: "Pending",
+    });
+
+    res.send(complaints);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Server error" });
+  }
+});
+
+//route to retrieve all complaints for a student with status "Denied"
+router.get("/student/:id/pending", async (req, res) => {
+  try {
+    const complaints = await Complaint.find({
+      student: req.params.id,
+      status: "Denied",
+    });
+
+    res.send(complaints);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Server error" });
+  }
+});
+
+//route to retrieve all complaints for a student with status "Settled"
+router.get("/student/:id/settled", async (req, res) => {
+  try {
+    const complaints = await Complaint.find({
+      student: req.params.id,
+      status: "Settled",
+    });
+
+    res.send(complaints);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Server error" });
+  }
+});
+
+//route to accept complaint
 router.patch("/:id/accept", async (req, res) => {
   try {
     const complaint = await Complaint.findByIdAndUpdate(
@@ -116,7 +161,7 @@ router.patch("/:id/accept", async (req, res) => {
   }
 });
 
-// PATCH route to update the status of a complaint to "Denied"
+//route to update the status of a complaint to "Denied"
 router.patch("/:id/deny", async (req, res) => {
   try {
     const complaint = await Complaint.findByIdAndUpdate(
@@ -130,6 +175,42 @@ router.patch("/:id/deny", async (req, res) => {
     }
 
     res.send(complaint);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Server error" });
+  }
+});
+
+//route to retrieve all complaints with status "Pending"
+router.get("/pending", async (req, res) => {
+  try {
+    const complaints = await Complaint.find({ status: "Pending" });
+
+    res.send(complaints);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Server error" });
+  }
+});
+
+//route to retrieve all complaints with status "Pending"
+router.get("/denied", async (req, res) => {
+  try {
+    const complaints = await Complaint.find({ status: "Denied" });
+
+    res.send(complaints);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Server error" });
+  }
+});
+
+//route to retrieve all complaints with status "Pending"
+router.get("/accepted", async (req, res) => {
+  try {
+    const complaints = await Complaint.find({ status: "Settled" });
+
+    res.send(complaints);
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: "Server error" });
