@@ -57,58 +57,25 @@ router.get("/:id", async (req, res) => {
 });
 
 //CHANGE PASSWORD ADMIN
+router.post("/change-password", async (req, res) => {
+  const { id, oldPassword, newPassword } = req.body;
 
-router.post("/reset", async (req, res) => {
-  const { email } = req.body;
+  try {
+    const admin = await Admin.findOne({ _id: id });
 
-  // Find the user with the given email
-  const admin = await Admin.findOne({ email });
-  if (!admin) return res.status(400).send({ error: "Invalid email" });
+    const isMatch = await bcrypt.compare(oldPassword, admin.password);
+    if (!isMatch)
+      return res.status(400).json({ msg: "Incorrect old password" });
 
-  // Generate and send an OTP
-  const otp = generateOTP();
-  sendOTP(admin.email, otp);
+    const salt = await bcrypt.genSalt(10);
+    admin.password = await bcrypt.hash(newPassword, salt);
 
-  // Save the OTP in the user's database record
-  admin.otp = otp;
-  await admin.save();
-
-  res.send({ message: "OTP sent" });
+    await admin.save();
+    res.json({ msg: "Password changed successfully" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
 });
-
-router.post("/reset/verify", async (req, res) => {
-  const { email, otp, password } = req.body;
-
-  // Find the user with the given email
-  const admin = await Admin.findOne({ email });
-  if (!admin) return res.status(400).send({ error: "Invalid email" });
-
-  // Check if the OTP is correct
-  if (admin.otp !== otp) return res.status(400).send({ error: "Invalid OTP" });
-
-  // Update the user's password
-  admin.password = password;
-  await admin.save();
-
-  res.send({ message: "Password updated" });
-});
-
-// app.post("/change-password", async (req, res) => {
-//   try {
-//     const admin = await Admin.findOne({ username: req.body.username });
-//     const passwordHash = admin.password;
-//     const isValid = await bcrypt.compare(req.body.oldPassword, passwordHash);
-//     if (isValid) {
-//       const hashedPassword = await bcrypt.hash(req.body.newPassword);
-//       user.password = hashedPassword;
-//       await user.save();
-
-//       return res.send({ message: "Password changed successfully" });
-//     }
-//     return res.status(400).json("Password do not match");
-//   } catch (error) {
-//     return res.status(500).json(err);
-//   }
-// });
 
 module.exports = router;

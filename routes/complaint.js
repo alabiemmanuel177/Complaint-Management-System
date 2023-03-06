@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Complaint = require("../models/Complaint");
+const Student = require("../models/Student");
 
 //CREATE COMPLAINTS
 router.post("/", async (req, res) => {
@@ -69,6 +70,69 @@ router.patch("/:id", async (req, res) => {
     return res.status(200).json(updatedComplaint);
   } catch (err) {
     return res.status(500).json(err);
+  }
+});
+
+//route to get complaint for a particular student
+router.get("/:studentId/complaints", async (req, res) => {
+  try {
+    // Get the student ID from the request parameters
+    const { studentId } = req.params;
+
+    // Find the student
+    const student = await Student.findById(studentId);
+    // If the student is not found, return an error
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+    //Find Complaint by student
+    const studentComplaint = await Complaint.find({ student: studentId });
+
+    return res.json({
+      student: student,
+      complaint: studentComplaint,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+//route to accepct complaint
+router.patch("/:id/accept", async (req, res) => {
+  try {
+    const complaint = await Complaint.findByIdAndUpdate(
+      req.params.id,
+      { status: "Settled" },
+      { new: true }
+    );
+    if (!complaint) {
+      return res.status(404).send({ error: "Complaint not found" });
+    }
+    res.send(complaint);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Server error" });
+  }
+});
+
+// PATCH route to update the status of a complaint to "Denied"
+router.patch("/:id/deny", async (req, res) => {
+  try {
+    const complaint = await Complaint.findByIdAndUpdate(
+      req.params.id,
+      { status: "Denied" },
+      { new: true }
+    );
+
+    if (!complaint) {
+      return res.status(404).send({ error: "Complaint not found" });
+    }
+
+    res.send(complaint);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Server error" });
   }
 });
 

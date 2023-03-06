@@ -56,41 +56,26 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//CHANGE PASSWORD LECTURER
-router.post("/reset", async (req, res) => {
-  const { email } = req.body;
+//CHANGE PASSWORD Lecturer
+router.post("/change-password", async (req, res) => {
+  const { id, oldPassword, newPassword } = req.body;
 
-  // Find the lecturer with the given email
-  const lecturer = await Lecturer.findOne({ email });
-  if (!lecturer) return res.status(400).send({ error: "Invalid email" });
+  try {
+    const lecturer = await Lecturer.findOne({ _id: id });
 
-  // Generate and send an OTP
-  const otp = generateOTP();
-  sendOTP(lecturer.email, otp);
+    const isMatch = await bcrypt.compare(oldPassword, lecturer.password);
+    if (!isMatch)
+      return res.status(400).json({ msg: "Incorrect old password" });
 
-  // Save the OTP in the lecturer's database record
-  lecturer.otp = otp;
-  await lecturer.save();
+    const salt = await bcrypt.genSalt(10);
+    lecturer.password = await bcrypt.hash(newPassword, salt);
 
-  res.send({ message: "OTP sent" });
-});
-
-router.post("/reset/verify", async (req, res) => {
-  const { email, otp, password } = req.body;
-
-  // Find the lecturer with the given email
-  const lecturer = await Lecturer.findOne({ email });
-  if (!lecturer) return res.status(400).send({ error: "Invalid email" });
-
-  // Check if the OTP is correct
-  if (lecturer.otp !== otp)
-    return res.status(400).send({ error: "Invalid OTP" });
-
-  // Update the lecturer's password
-  lecturer.password = password;
-  await lecturer.save();
-
-  res.send({ message: "Password updated" });
+    await lecturer.save();
+    res.json({ msg: "Password changed successfully" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
 });
 
 module.exports = router;

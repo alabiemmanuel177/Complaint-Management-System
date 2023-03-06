@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const Lecturer = require("../models/Lecturer");
 
 //REGISTER ADMIN
-router.post("/adminRegister", async (req, res) => {
+router.post("/register/admin", async (req, res) => {
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPass = await bcrypt.hash(req.body.password, salt);
@@ -21,7 +21,7 @@ router.post("/adminRegister", async (req, res) => {
 });
 
 //REGISTER STUDENT
-router.post("/studentRegister", async (req, res) => {
+router.post("/register/student", async (req, res) => {
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPass = await bcrypt.hash(req.body.password, salt);
@@ -43,7 +43,7 @@ router.post("/studentRegister", async (req, res) => {
 });
 
 //REGISTER LECTURER
-router.post("/lecturerRegister", async (req, res) => {
+router.post("/register/lecturer", async (req, res) => {
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPass = await bcrypt.hash(req.body.password, salt);
@@ -51,7 +51,7 @@ router.post("/lecturerRegister", async (req, res) => {
       name: req.body.name,
       password: hashedPass,
       faculty: req.body.department,
-      email: req.body.email
+      email: req.body.email,
     });
     const lecturer = await newLecturer.save();
     return res.status(200).json(lecturer);
@@ -61,7 +61,7 @@ router.post("/lecturerRegister", async (req, res) => {
 });
 
 //LECTURER LOGIN
-router.post("/lecturerLogin", async (req, res) => {
+router.post("/login/lecturer", async (req, res) => {
   try {
     const lecturer = await Lecturer.findOne({ email: req.body.email });
     if (!lecturer) {
@@ -82,7 +82,7 @@ router.post("/lecturerLogin", async (req, res) => {
 });
 
 //STUDENT LOGIN
-router.post("/studentLogin", async (req, res) => {
+router.post("/student/login", async (req, res) => {
   try {
     const student = await Student.findOne({ matricno: req.body.matricno });
     if (!student) {
@@ -100,7 +100,7 @@ router.post("/studentLogin", async (req, res) => {
 });
 
 //ADMIN LOGIN
-router.post("/adminLogin", async (req, res) => {
+router.post("/login/admin", async (req, res) => {
   try {
     const admin = await Admin.findOne({ email: req.body.email });
     if (!admin) {

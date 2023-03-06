@@ -8,14 +8,17 @@ const ComplaintSchema = new mongoose.Schema(
     },
     faculty: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Lecturer",
+      ref: "Faculty",
     },
     status: {
       type: String,
       required: true,
+      enum: ["Settled", "Pending", "Denied"],
+      default: "Pending",
     },
     comment: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
     },
     complaint: {
       type: String,
