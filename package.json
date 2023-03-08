@@ -19,9 +19,6 @@
   "scripts": {
     "start": "nodemon index.js"
   },
-  "engines": {
-    "node": "19.x"
-  },
   "author": "",
   "license": "ISC",
   "devDependencies": {},
