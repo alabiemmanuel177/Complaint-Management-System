@@ -54,9 +54,10 @@ router.get("/", async (req, res) => {
   try {
     let faculties;
     faculties = await Faculty.find();
-    return res.status(200).json(departments);
+    return res.status(200).json(faculties);
   } catch (err) {
-    return res.status(500).json(err);
+    res.status(500).json(err);
+    
   }
 });
 

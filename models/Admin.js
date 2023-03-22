@@ -1,3 +1,4 @@
+/* This is the schema for the admin model. */
 const mongoose = require("mongoose");
 
 const AdminSchema = new mongoose.Schema(

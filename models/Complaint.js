@@ -1,3 +1,4 @@
+/* Creating a schema for the Complaint model. */
 const mongoose = require("mongoose");
 
 const ComplaintSchema = new mongoose.Schema(

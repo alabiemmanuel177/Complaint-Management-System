@@ -1,3 +1,4 @@
+/* This is a function that connects to the database. */
 require("dotenv").config();
 const mongoose = require("mongoose");
 

@@ -193,7 +193,7 @@ router.get("/pending", async (req, res) => {
   }
 });
 
-//route to retrieve all complaints with status "Pending"
+//route to retrieve all complaints with status "denied"
 router.get("/denied", async (req, res) => {
   try {
     const complaints = await Complaint.find({ status: "Denied" });
@@ -205,7 +205,7 @@ router.get("/denied", async (req, res) => {
   }
 });
 
-//route to retrieve all complaints with status "Pending"
+//route to retrieve all complaints with status "accepted"
 router.get("/accepted", async (req, res) => {
   try {
     const complaints = await Complaint.find({ status: "Settled" });
