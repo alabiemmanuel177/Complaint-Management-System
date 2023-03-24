@@ -12,6 +12,7 @@ router.post("/register/admin", async (req, res) => {
     const newAdmin = new Admin({
       username: req.body.username,
       password: hashedPass,
+      email: req.body.email
     });
     const admin = await newAdmin.save();
     return res.status(200).json(admin);
