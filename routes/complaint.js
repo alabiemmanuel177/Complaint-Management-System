@@ -54,7 +54,7 @@ router.get("/:id", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     let complaints;
-    complaints = await Complaint.find();
+    complaints = await Complaint.find().populate('student').populate('faculty');
     return res.status(200).json(complaints);
   } catch (err) {
     return res.status(500).json(err);
