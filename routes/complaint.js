@@ -86,7 +86,7 @@ router.get("/:studentId/complaints", async (req, res) => {
       return res.status(404).json({ message: "Student not found" });
     }
     //Find Complaint by student
-    const studentComplaint = await Complaint.find({ student: studentId }).populate('commnt').populate('faculty');
+    const studentComplaint = await Complaint.find({ student: studentId }).populate('comment').populate('faculty');
 
     return res.json({
       student: student,
