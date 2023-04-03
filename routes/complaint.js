@@ -43,10 +43,23 @@ router.delete("/:id", async (req, res) => {
 //GET COMPLAINTS
 router.get("/:id", async (req, res) => {
   try {
-    const complaint = await Complaint.findById(req.params.id);
-    return res.status(200).json(complaint);
+    const complaint = await Complaint.findById(req.params.id)
+      .populate({
+        path: "comments",
+        populate: [
+          {
+            path: "userId",
+            model: "Student",
+            select: "firstname lastname email",
+          },
+          { path: "userId", model: "Lecturer", select: "name email" },
+        ],
+      })
+      .exec();
+    res.json(complaint);
   } catch (err) {
-    return res.status(500).json(err);
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
@@ -54,7 +67,21 @@ router.get("/:id", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     let complaints;
-    complaints = await Complaint.find().populate('student').populate('faculty').populate('comment');
+    complaints = await Complaint.find()
+      .populate("userId")
+      .populate("faculty")
+      .populate({
+        path: "comments",
+        populate: [
+          {
+            path: "userId",
+            model: "Student",
+            select: "firstname lastname email",
+          },
+          { path: "userId", model: "Lecturer", select: "name email" },
+        ],
+      })
+      .exec();
     return res.status(200).json(complaints);
   } catch (err) {
     return res.status(500).json(err);
@@ -86,7 +113,9 @@ router.get("/:studentId/complaints", async (req, res) => {
       return res.status(404).json({ message: "Student not found" });
     }
     //Find Complaint by student
-    const studentComplaint = await Complaint.find({ student: studentId }).populate('comment').populate('faculty');
+    const studentComplaint = await Complaint.find({ student: studentId })
+      .populate("comment")
+      .populate("faculty");
 
     return res.json({
       student: student,

@@ -17,14 +17,11 @@ const ComplaintSchema = new mongoose.Schema(
       enum: ["Settled", "Pending", "Denied"],
       default: "Pending",
     },
-    comment: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Comment",
-    },
     complaint: {
       type: String,
       required: true,
     },
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   },
   { timestamps: true }
 );

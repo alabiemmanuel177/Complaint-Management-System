@@ -1,5 +1,5 @@
-/* This is the schema for the comments. */
 const mongoose = require("mongoose");
+
 const CommentSchema = new mongoose.Schema(
   {
     comment: {
@@ -9,6 +9,15 @@ const CommentSchema = new mongoose.Schema(
     userId: {
       type: String,
       required: true,
+    },
+    userType: {
+      type: String,
+      enum: ["Student", "Lecturer"],
+      required: true,
+    },
+    complaint: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Complaint",
     },
   },
   { timestamps: true }
